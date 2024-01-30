@@ -1,7 +1,7 @@
 <?php
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'bugs')]
@@ -20,6 +20,12 @@ class Bug
 
     #[ORM\Column(type: Types::STRING)]
     private string $type;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reportedBugs')]
+    private User $reporter;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'assignedBugs')]
+    private User $engineer;
 
     public function getId(): ?int
     {
@@ -54,5 +60,27 @@ class Bug
     public function getType(): string
     {
         return $this->type;
+    }
+
+    public function setReporter(User $reporter): void
+    {
+        $this->reporter = $reporter;
+        $reporter->addReportedBug($this);
+    }
+
+    public function getReporter(): User
+    {
+        return $this->reporter;
+    }
+
+    public function setEngineer(User $engineer): void
+    {
+        $this->engineer = $engineer;
+        $engineer->addAssignedBug($this);
+    }
+
+    public function getEngineer(): User
+    {
+        return $this->engineer;
     }
 }

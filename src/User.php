@@ -1,7 +1,9 @@
 <?php
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
@@ -14,6 +16,17 @@ class User
 
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
+
+    #[ORM\OneToMany(targetEntity: Bug::class, mappedBy: 'reporter')]
+    private Collection $reportedBugs;
+
+    #[ORM\OneToMany(targetEntity: Bug::class, mappedBy: 'engineer')]
+    private Collection $assignedBugs;
+
+    public function __construct()
+    {
+        $this->reportedBugs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -28,5 +41,25 @@ class User
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function addReportedBug(Bug $bug): void
+    {
+        $this->reportedBugs[] = $bug;
+    }
+
+    public function getReportedBugs(): Collection
+    {
+        return $this->reportedBugs;
+    }
+
+    public function addAssignedBug(Bug $bug): void
+    {
+        $this->assignedBugs[] = $bug;
+    }
+
+    public function getAssignedBugs(): Collection
+    {
+        return $this->assignedBugs;
     }
 }
