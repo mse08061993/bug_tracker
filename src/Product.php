@@ -17,7 +17,7 @@ class Product
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: Bug::class, inversedBy: 'products')]
+    #[ORM\ManyToMany(targetEntity: Bug::class, mappedBy: 'products')]
     private Collection $bugs;
 
     public function __construct()
@@ -43,7 +43,6 @@ class Product
     public function addBug(Bug $bug): void
     {
         $this->bugs[] = $bug;
-        $bug->assignToProduct($this);
     }
 
     public function getBugs(): Collectoin

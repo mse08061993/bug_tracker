@@ -26,6 +26,7 @@ class User
     public function __construct()
     {
         $this->reportedBugs = new ArrayCollection();
+        $this->assignedBugs = new ArrayCollection();
     }
 
     public function getId(): ?int

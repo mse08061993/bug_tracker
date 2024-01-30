@@ -27,9 +27,9 @@ class Bug
     private User $reporter;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'assignedBugs')]
-    private User $engineer;
+    private ?User $engineer = null;
 
-    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'bugs')]
+    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'bugs')]
     private Collection $products;
 
     public function __construct()
@@ -89,7 +89,7 @@ class Bug
         $engineer->addAssignedBug($this);
     }
 
-    public function getEngineer(): User
+    public function getEngineer(): ?User
     {
         return $this->engineer;
     }
@@ -97,6 +97,7 @@ class Bug
     public function assignToProduct(Product $product): void
     {
         $this->products[] = $product;
+        $product->addBug($this);
     }
 
     public function getProducts(): Collection
