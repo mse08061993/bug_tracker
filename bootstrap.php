@@ -10,6 +10,9 @@ $configuration = ORMSetup::createAttributeMetadataConfiguration(paths: [__DIR__ 
 
 $connection = DriverManager::getConnection([
     'driver' => 'pdo_mysql',
+    'user' => 'sergey',
+    'password' => 'ks2905',
+    'dbname' => 'bug_tracker',
 ]);
 
 $entityManager = new EntityManager($connection, $configuration);
