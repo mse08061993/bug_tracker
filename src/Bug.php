@@ -1,5 +1,7 @@
 <?php
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -26,6 +28,14 @@ class Bug
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'assignedBugs')]
     private User $engineer;
+
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'bugs')]
+    private Collection $products;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -82,5 +92,15 @@ class Bug
     public function getEngineer(): User
     {
         return $this->engineer;
+    }
+
+    public function assignToProduct(Product $product): void
+    {
+        $this->products[] = $product;
+    }
+
+    public function getProducts(): Collection
+    {
+        return $this->products;
     }
 }

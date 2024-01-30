@@ -1,5 +1,7 @@
 <?php
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 
@@ -15,6 +17,14 @@ class Product
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
 
+    #[ORM\ManyToMany(targetEntity: Bug::class, inversedBy: 'products')]
+    private Collection $bugs;
+
+    public function __construct()
+    {
+        $this->bugs = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -28,5 +38,16 @@ class Product
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function addBug(Bug $bug): void
+    {
+        $this->bugs[] = $bug;
+        $bug->assignToProduct($this);
+    }
+
+    public function getBugs(): Collectoin
+    {
+        return $this->bugs;
     }
 }
