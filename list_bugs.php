@@ -1,20 +1,14 @@
 <?php
-//list_bugs.php
+//list_bugs.php <number of bugs>
 
 require_once 'bootstrap.php';
 
-$dql = "
-    SELECT b, e, r
-    FROM Bug b
-        JOIN b.engineer e
-        JOIN b.reporter r
-    ORDER BY b.created DESC
-";
+if (empty($argv[1])) {
+    die("Pass number of bugs in the first argument!\n");
+}
 
-$query = $entityManager->createQuery($dql);
-$query->setMaxResults(10);
-$bugs = $query->getResult();
-
+$nubmerOfBugs = (int) $argv[1];
+$bugs = $entityManager->getRepository(Bug::class)->getRecentBugs($nubmerOfBugs);
 foreach ($bugs as $bug) {
     echo $bug->getDescription() . ' - ' . $bug->getCreated()->format('d.m.Y') . "\n";
     echo "\tReported by " . $bug->getReporter()->getName() . "\n";
